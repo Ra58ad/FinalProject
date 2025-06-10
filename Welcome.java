@@ -46,6 +46,13 @@ public class Welcome extends JFrame{
             
 
             JPanel leftPanel = new JPanel();
+            ImageIcon icon = new ImageIcon("img_1.png");
+            Image img = icon.getImage();
+            Image scaledImg = img.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+            ImageIcon scaledIcon = new ImageIcon(scaledImg);
+            JLabel l1 = new JLabel(scaledIcon);
+            leftPanel.add(l1);
+
             add(leftPanel, BorderLayout.WEST);
 
             JScrollPane scPanel = new JScrollPane(mainPanel);

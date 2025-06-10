@@ -131,6 +131,6 @@ public class Login extends JFrame {
 
 class Main {
     public static void main(String[] args) throws IOException {
-        new Final_Project();
+        new Manager();
     }
 }
