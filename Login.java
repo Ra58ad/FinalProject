@@ -76,10 +76,12 @@ public class Login extends JFrame {
 
         l2 = new JLabel("Password: ");
         l2.setForeground(Color.decode("#A85307"));
+        l2.setFont(fo);
         gb.gridx = 0;
         gb.gridy = 4;
         //gb.gridheight = 1;
         gb.gridwidth = 1;
+        in.set(0,0,0,0);
         gb.weighty = 0.1;
         gb.ipadx = 0;
         //gb.weightx = 0.5;
@@ -96,6 +98,7 @@ public class Login extends JFrame {
         //gb.weighty = 0.1;
         p1.add(pa,gb);
 
+
         p2 = new JPanel();
         b1 = new JButton("OK");
         b1.addActionListener(e -> {
@@ -109,7 +112,9 @@ public class Login extends JFrame {
         b2 = new JButton("Cancel");
         b2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                
+                if(e.getSource() == b2){
+                    new Welcome();
+                }
             }
         });
         b2.setSize(60, 30);

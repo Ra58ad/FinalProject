@@ -5,138 +5,136 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.sql.*;
 
-public class Final_Project {
+public class Final_Project extends JFrame {
 
-    GridBagConstraints gdc = new GridBagConstraints();
-    JButton bikesOffered;
-    JButton bikesRented;
-    JButton Payment;
-    JPanel mainPanel;
-    JPanel bikesOfferedPanel;
-    JPanel bikesRentedPanel;
-    JPanel paymentPanel;
+    private GridBagConstraints gdc = new GridBagConstraints();
+    private JButton bikesOffered, bikesRented, payment, staffView;
+    private JPanel mainPanel, bikesOfferedPanel, bikesRentedPanel, paymentPanel, staffPanel;
+    private ArrayList<RentedBike> rentedBikes = new ArrayList<>();
+    private ArrayList<PaymentRecord> paymentRecords = new ArrayList<>();
+    private ArrayList<Bike> bikeList = new ArrayList<>();
+    private Connection conn;
 
-    ArrayList<RentedBike> rentedBikes = new ArrayList<>();
-    ArrayList<PaymentRecord> paymentRecords = new ArrayList<>();
+    public Final_Project() {
+        // try {
+        //     conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bikerental?useSSL=false", "root", "your_password");
+        // } catch (SQLException e) {
+        //     JOptionPane.showMessageDialog(this, "Database connection failed: " + e.getMessage());
+        //     System.exit(1);
+        // }
 
-    Final_Project() {
-        JFrame frame = new JFrame();
-        JPanel leftPanel = new JPanel();
+        setTitle("Bicycle Rental System");
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-        leftPanel.setBackground(Color.DARK_GRAY);
-        leftPanel.setLayout(new BorderLayout());
-        leftPanel.setPreferredSize(new Dimension(200, 0));
-
-        JLabel windowLabel = new JLabel("Customer windows");
-        windowLabel.setHorizontalAlignment(JLabel.CENTER);
-        windowLabel.setForeground(Color.WHITE);
-
-        JPanel windowPanel = new JPanel();
-        windowPanel.add(windowLabel);
-        windowPanel.setBackground(Color.gray);
-
-        JPanel leftMainPanel = new JPanel();
-        leftMainPanel.setLayout(new GridBagLayout());
-        leftMainPanel.setBackground(Color.DARK_GRAY);
-        bikesOffered = new JButton("Bikes Offered");
-        bikesOffered.addActionListener(Listener);
-        bikesOffered.setBackground(Color.DARK_GRAY);
-        bikesOffered.setForeground(Color.WHITE);
-        gdc.gridx = 0;
-        gdc.gridy = 0;
-        gdc.fill = GridBagConstraints.HORIZONTAL;
-        gdc.weightx = 1.0;
-        gdc.insets = new Insets(5, 5, 5, 5);
-
-        leftMainPanel.add(bikesOffered, gdc);
-
-        bikesRented = new JButton("Bikes Rented");
-        bikesRented.addActionListener(Listener);
-        bikesRented.setBackground(Color.DARK_GRAY);
-        bikesRented.setForeground(Color.WHITE);
-        gdc.gridx = 0;
-        gdc.gridy = 1;
-        gdc.fill = GridBagConstraints.HORIZONTAL;
-        leftMainPanel.add(bikesRented, gdc);
-
-        Payment = new JButton("Payment");
-        Payment.setBackground(Color.DARK_GRAY);
-        Payment.setForeground(Color.WHITE);
-        Payment.addActionListener(Listener);
-        gdc.gridx = 0;
-        gdc.gridy = 2;
-        gdc.fill = GridBagConstraints.HORIZONTAL;
-
-        leftMainPanel.add(Payment, gdc);
-
-        leftPanel.add(windowPanel, BorderLayout.NORTH);
-        leftPanel.add(leftMainPanel, BorderLayout.CENTER);
-
-        mainPanel = new JPanel();
-        mainPanel.setBackground(Color.BLUE);
-        mainPanel.setLayout(new GridBagLayout());
-
-        bikesOfferedPanel = new JPanel();
-        bikesOfferedPanel.setBackground(Color.BLUE);
-        bikesOfferedPanel.setPreferredSize(new Dimension(600, 400));
-        bikesOfferedPanel.setVisible(false);
-        bikesOfferedPanel.setLayout(new GridLayout(0, 3, 10, 10));
-
-        addBike("img.png", "100 birr per hour", "Helmet included");
-        addBike("img_1.png", "120 birr per hour", "Gloves included");
-        addBike("img_2.png", "90 birr per hour", "Basket included");
-        addBike("img_3.png", "110 birr per hour", "Bell included");
-        addBike("img_4.png", "130 birr per hour", "Lights included");
-        addBike("img_5.png", "140 birr per hour", "Reflectors included");
-
+        mainPanel = new JPanel(new CardLayout());
+        bikesOfferedPanel = new JPanel(new GridLayout(0, 2, 10, 10));
+        bikesOfferedPanel.setBackground(Color.BLACK);
         bikesRentedPanel = new JPanel();
-        bikesRentedPanel.setBackground(Color.WHITE);
-        bikesRentedPanel.setPreferredSize(new Dimension(600, 400));
-        bikesRentedPanel.setVisible(false);
-        bikesRentedPanel.setLayout(new BoxLayout(bikesRentedPanel, BoxLayout.Y_AXIS));
-
+        bikesRentedPanel.setBackground(Color.BLACK);
         paymentPanel = new JPanel();
-        paymentPanel.setBackground(Color.WHITE);
-        paymentPanel.setPreferredSize(new Dimension(600, 400));
-        paymentPanel.setVisible(false);
-        paymentPanel.setLayout(new BoxLayout(paymentPanel, BoxLayout.Y_AXIS));
+        paymentPanel.setBackground(Color.BLACK);
+        staffPanel = new JPanel(new GridLayout(3, 1));
+        staffPanel.setBackground(Color.BLACK);
 
-        mainPanel.add(bikesOfferedPanel);
+        bikesOffered = new JButton("Bikes Offered");
+        bikesRented = new JButton("Bikes Rented");
+        payment = new JButton("Payment");
+        staffView = new JButton("Staff View");
 
-        frame.add(mainPanel, BorderLayout.CENTER);
-        frame.add(leftPanel, BorderLayout.WEST);
-        frame.setSize(850, 600);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-    }
+        bikesOffered.setBackground(Color.DARK_GRAY);
+        bikesRented.setBackground(Color.DARK_GRAY);
+        payment.setBackground(Color.DARK_GRAY);
+        staffView.setBackground(Color.DARK_GRAY);
 
-    private void addBike(String imagePath, String price, String accessories) {
-        ImageIcon icon = new ImageIcon(imagePath);
-        Image img = icon.getImage();
-        Image scaledImg = img.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-        ImageIcon scaledIcon = new ImageIcon(scaledImg);
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(bikesOffered);
+        buttonPanel.add(bikesRented);
+        buttonPanel.add(payment);
+        buttonPanel.add(staffView);
 
+        addSampleBikes();
 
-        JLabel bikeLabel = new JLabel();
-        bikeLabel.setIcon(scaledIcon);
-        bikeLabel.setText("<html><center>" + price + "<br/>" + accessories + "</center></html>");
-        bikeLabel.setForeground(Color.WHITE);
-        bikeLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-        bikeLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
-        bikeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        bikeLabel.setVerticalAlignment(SwingConstants.CENTER);
+        mainPanel.add(bikesOfferedPanel, "BikesOffered");
+        mainPanel.add(bikesRentedPanel, "BikesRented");
+        mainPanel.add(paymentPanel, "Payment");
+        mainPanel.add(staffPanel, "Staff");
 
-        bikeLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                openRentingPage(imagePath, price, accessories);
+        add(buttonPanel, BorderLayout.NORTH);
+        add(mainPanel, BorderLayout.CENTER);
+
+        ActionListener listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout) mainPanel.getLayout();
+                if (e.getSource() == bikesOffered) {
+                    bikesOffered.setBackground(Color.BLUE);
+                    bikesRented.setBackground(Color.DARK_GRAY);
+                    payment.setBackground(Color.DARK_GRAY);
+                    staffView.setBackground(Color.DARK_GRAY);
+                    cl.show(mainPanel, "BikesOffered");
+                } else if (e.getSource() == bikesRented) {
+                    bikesRented.setBackground(Color.BLUE);
+                    bikesOffered.setBackground(Color.DARK_GRAY);
+                    payment.setBackground(Color.DARK_GRAY);
+                    staffView.setBackground(Color.DARK_GRAY);
+                    showRentedBikes();
+                    cl.show(mainPanel, "BikesRented");
+                } else if (e.getSource() == payment) {
+                    payment.setBackground(Color.BLUE);
+                    bikesOffered.setBackground(Color.DARK_GRAY);
+                    bikesRented.setBackground(Color.DARK_GRAY);
+                    staffView.setBackground(Color.DARK_GRAY);
+                    showPaymentRecords();
+                    cl.show(mainPanel, "Payment");
+                } else if (e.getSource() == staffView) {
+                    staffView.setBackground(Color.BLUE);
+                    bikesOffered.setBackground(Color.DARK_GRAY);
+                    bikesRented.setBackground(Color.DARK_GRAY);
+                    payment.setBackground(Color.DARK_GRAY);
+                    showStaffView();
+                    cl.show(mainPanel, "Staff");
+                }
             }
-        });
+        };
+        bikesOffered.addActionListener(listener);
+        bikesRented.addActionListener(listener);
+        payment.addActionListener(listener);
+        staffView.addActionListener(listener);
 
-        bikesOfferedPanel.add(bikeLabel);
+        setVisible(true);
     }
 
-    private void openRentingPage(String imagePath, String price, String accessories) {
+    private void addSampleBikes() {
+        bikeList.add(new Bike("/images/bike1.jpg", "120.00", "Helmet"));
+        bikeList.add(new Bike("/images/bike2.jpg", "100.00", "Bike Lock"));
+        bikeList.add(new Bike("/images/bike3.jpg", "130.00", "Water Bottle"));
+        bikeList.add(new Bike("/images/bike4.jpg", "150.00", "Helmet, Bike Lock"));
+        bikeList.add(new Bike("/images/bike5.jpg", "110.00", "Water Bottle"));
+
+        for (Bike bike : bikeList) {
+            JLabel bikeLabel = new JLabel(new ImageIcon(getClass().getResource(bike.imagePath)));
+            bikeLabel.setText("<html>Price: " + bike.price + "<br>Accessories: " + bike.accessories + "</html>");
+            bikeLabel.setForeground(Color.WHITE);
+            bikeLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+            bikeLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
+            bikeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            bikeLabel.setVerticalAlignment(SwingConstants.CENTER);
+
+            bikeLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    openRentingPage(bike.imagePath, bike.price, bike.accessories);
+                }
+            });
+
+            bikesOfferedPanel.add(bikeLabel);
+        }
+    }
+
+    private void openRentingPage(String resourcePath, String price, String accessories) {
         JFrame rentingFrame = new JFrame("Rent Bike");
         rentingFrame.setSize(400, 500);
         rentingFrame.setLocationRelativeTo(null);
@@ -144,7 +142,13 @@ public class Final_Project {
         rentingPanel.setLayout(new BoxLayout(rentingPanel, BoxLayout.Y_AXIS));
         rentingPanel.setBackground(Color.LIGHT_GRAY);
 
-        ImageIcon icon = new ImageIcon(imagePath);
+        java.net.URL imgURL = getClass().getResource(resourcePath);
+        if (imgURL == null) {
+            System.err.println("Couldn't find file: " + resourcePath);
+            return;
+        }
+
+        ImageIcon icon = new ImageIcon(imgURL);
         Image img = icon.getImage();
         Image scaledImg = img.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaledImg);
@@ -153,22 +157,20 @@ public class Final_Project {
         bikeImageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         rentingPanel.add(bikeImageLabel);
 
-        JLabel priceLabel = new JLabel(price);
+        JLabel priceLabel = new JLabel("Price: " + price);
         priceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         rentingPanel.add(priceLabel);
 
-        JLabel accessoriesLabel = new JLabel(accessories);
+        JLabel accessoriesLabel = new JLabel("Accessories: " + accessories);
         accessoriesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         rentingPanel.add(accessoriesLabel);
 
         JPanel durationPanel = new JPanel(new FlowLayout());
         durationPanel.add(new JLabel("Start Date:"));
         JTextField startDateField = new JTextField(10);
-
         durationPanel.add(startDateField);
         durationPanel.add(new JLabel("Return Date:"));
         JTextField returnDateField = new JTextField(10);
-
         durationPanel.add(returnDateField);
         rentingPanel.add(durationPanel);
 
@@ -179,7 +181,7 @@ public class Final_Project {
         paymentLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         paymentPanel.add(paymentLabel);
 
-        JRadioButton teleBirr = new JRadioButton("tele Birr");
+        JRadioButton teleBirr = new JRadioButton("Telebirr");
         JRadioButton mobileBanking = new JRadioButton("Mobile Banking");
 
         ButtonGroup paymentGroup = new ButtonGroup();
@@ -201,7 +203,7 @@ public class Final_Project {
                 JOptionPane.showMessageDialog(rentingFrame, "Please fill all fields and select payment method");
                 return;
             }
-            rentedBikes.add(new RentedBike(imagePath, price, startDate, returnDate));
+            rentedBikes.add(new RentedBike("", price, startDate, returnDate));
             paymentRecords.add(new PaymentRecord(price, false));
             JOptionPane.showMessageDialog(rentingFrame, "Bike rented successfully!");
             rentingFrame.dispose();
@@ -213,58 +215,76 @@ public class Final_Project {
 
     private void showRentedBikes() {
         bikesRentedPanel.removeAll();
-        bikesRentedPanel.setBackground(Color.BLACK);
         for (RentedBike rb : rentedBikes) {
-            String info = "<html>Bike: <br>" + rb.price + "<br>From: " + rb.startDate + " To: " + rb.returnDate + "</html>";
+            String info = "<html>Bike: " + rb.price + "<br>From: " + rb.startDate + "<br>To: " + rb.returnDate + "</html>";
             JLabel label = new JLabel(info);
             label.setForeground(Color.WHITE);
             bikesRentedPanel.add(label);
         }
-        updateMainPanel(bikesRentedPanel);
+        mainPanel.revalidate();
+        mainPanel.repaint();
     }
 
     private void showPaymentRecords() {
         paymentPanel.removeAll();
-        paymentPanel.setBackground(Color.BLACK);
         for (PaymentRecord pr : paymentRecords) {
             String info = "<html>Amount: " + pr.amount + "<br>Due: " + (pr.isPaid ? "No" : "Yes") + "</html>";
             JLabel label = new JLabel(info);
             label.setForeground(Color.WHITE);
             paymentPanel.add(label);
         }
-        updateMainPanel(paymentPanel);
-    }
-
-    private void updateMainPanel(JPanel panelToShow) {
-        mainPanel.removeAll();
-        mainPanel.add(panelToShow);
-        panelToShow.setVisible(true);
         mainPanel.revalidate();
         mainPanel.repaint();
     }
 
-    ActionListener Listener = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == bikesOffered) {
-                bikesOffered.setBackground(Color.BLUE);
-                bikesRented.setBackground(Color.DARK_GRAY);
-                Payment.setBackground(Color.DARK_GRAY);
-                updateMainPanel(bikesOfferedPanel);
-
-            } else if (e.getSource() == bikesRented) {
-                bikesRented.setBackground(Color.BLUE);
-                bikesOffered.setBackground(Color.DARK_GRAY);
-                Payment.setBackground(Color.DARK_GRAY);
-                showRentedBikes();
-            } else if (e.getSource() == Payment) {
-                Payment.setBackground(Color.BLUE);
-                bikesOffered.setBackground(Color.DARK_GRAY);
-                bikesRented.setBackground(Color.DARK_GRAY);
-                showPaymentRecords();
+    private void showStaffView() {
+        staffPanel.removeAll();
+        try {
+            String sqlBikes = "SELECT * FROM Bicycle";
+            Statement stmtBikes = conn.createStatement();
+            ResultSet rsBikes = stmtBikes.executeQuery(sqlBikes);
+            JTextArea bikesArea = new JTextArea("Bikes:\n");
+            while (rsBikes.next()) {
+                bikesArea.append("ID: " + rsBikes.getInt("bicycle_id") + ", Model: " + rsBikes.getString("model") + ", Type: " + rsBikes.getString("type") + ", Price/Hour: " + rsBikes.getDouble("price_per_hour") + "\n");
             }
+            staffPanel.add(new JScrollPane(bikesArea));
+
+            String sqlAccessories = "SELECT * FROM Accessory";
+            Statement stmtAccessories = conn.createStatement();
+            ResultSet rsAccessories = stmtAccessories.executeQuery(sqlAccessories);
+            JTextArea accessoriesArea = new JTextArea("Accessories:\n");
+            while (rsAccessories.next()) {
+                accessoriesArea.append("ID: " + rsAccessories.getInt("accessory_id") + ", Type: " + rsAccessories.getString("type") + ", Price: " + rsAccessories.getDouble("price") + "\n");
+            }
+            staffPanel.add(new JScrollPane(accessoriesArea));
+
+            String sqlCustomers = "SELECT * FROM Renter";
+            Statement stmtCustomers = conn.createStatement();
+            ResultSet rsCustomers = stmtCustomers.executeQuery(sqlCustomers);
+            JTextArea customersArea = new JTextArea("Customers:\n");
+            while (rsCustomers.next()) {
+                customersArea.append("ID: " + rsCustomers.getInt("renter_id") + ", Name: " + rsCustomers.getString("full_name") + ", Email: " + rsCustomers.getString("email") + "\n");
+            }
+            staffPanel.add(new JScrollPane(customersArea));
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error fetching staff data: " + e.getMessage());
         }
-    };
+        mainPanel.revalidate();
+        mainPanel.repaint();
+    }
+
+    class Bike {
+        String imagePath;
+        String price;
+        String accessories;
+
+        Bike(String imagePath, String price, String accessories) {
+            this.imagePath = imagePath;
+            this.price = price;
+            this.accessories = accessories;
+        }
+    }
 
     class RentedBike {
         String imagePath;
@@ -289,5 +309,4 @@ public class Final_Project {
             this.isPaid = isPaid;
         }
     }
-
 }

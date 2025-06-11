@@ -43,11 +43,12 @@ public class Manager extends JFrame implements ActionListener {
 
         setResizable(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(300, 300);
+        setSize(600, 600);
         setVisible(true);
     }
         @Override
         public void actionPerformed(ActionEvent e){
+        
         JComboBox com = (JComboBox) e.getSource();
         String sel = (String) com.getSelectedItem();
         if (sel == "Bikes"){}
