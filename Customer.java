@@ -2,9 +2,6 @@ package FinalProject;
 
 import javax.swing.*;
 
-import FinalProject.Customer.Bike;
-import FinalProject.Customer.PaymentRecord;
-import FinalProject.Customer.RentedBike;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -20,7 +17,6 @@ public class Customer extends JFrame {
     private JPanel mainPanel, bikesOfferedPanel, bikesRentedPanel, paymentPanel, staffPanel;
     private ArrayList<RentedBike> rentedBikes = new ArrayList<>();
     private ArrayList<PaymentRecord> paymentRecords = new ArrayList<>();
-    private ArrayList<Bike> bikeList = new ArrayList<>();
     ArrayList <String[]> sb = new ArrayList<>();
     private Connection conn;
 
@@ -33,7 +29,7 @@ public class Customer extends JFrame {
             JOptionPane.showMessageDialog(this, "Database connection failed: " + e.getMessage());
             System.exit(1);
         }
-
+        fetchBikes();
 
 
 
@@ -44,13 +40,11 @@ public class Customer extends JFrame {
         bikesRentedPanel.setBackground(Color.BLACK);
         paymentPanel = new JPanel();
         paymentPanel.setBackground(Color.BLACK);
-        staffPanel = new JPanel(new GridLayout(3, 1));
-        staffPanel.setBackground(Color.BLACK);
+
 
         bikesOffered = new JButton("Bikes Offered");
         bikesRented = new JButton("Bikes Rented");
         payment = new JButton("Payment");
-        staffView = new JButton("Staff View");
 
         bikesOffered.setBackground(Color.DARK_GRAY);
         bikesRented.setBackground(Color.DARK_GRAY);
@@ -61,14 +55,13 @@ public class Customer extends JFrame {
         buttonPanel.add(bikesOffered);
         buttonPanel.add(bikesRented);
         buttonPanel.add(payment);
-        buttonPanel.add(staffView);
 
         addSampleBikes();
 
         mainPanel.add(bikesOfferedPanel, "BikesOffered");
         mainPanel.add(bikesRentedPanel, "BikesRented");
         mainPanel.add(paymentPanel, "Payment");
-        mainPanel.add(staffPanel, "Staff");
+
 
         add(buttonPanel, BorderLayout.NORTH);
         add(mainPanel, BorderLayout.CENTER);
@@ -112,19 +105,16 @@ public class Customer extends JFrame {
         setVisible(true);
     }
 
-    String[] imgList = {"/img_1.png", "/img_2.png", "/img_3.png", "/img_4.png", "/img_5.png"};
+    String[] imgList = {"img_1.png", "img_2.png", "img_3.png", "img_4.png", "img_5.png"};
 
     private void addSampleBikes() {
-        bikeList.add(new Bike("/img_1.png", "120.00", "Helmet"));
-        bikeList.add(new Bike("/img_2.png", "100.00", "Bike Lock"));
-        bikeList.add(new Bike("/img_3.png", "130.00", "Water Bottle"));
-        bikeList.add(new Bike("/img_4.png", "150.00", "Helmet, Bike Lock"));
-        bikeList.add(new Bike("/img_5.png", "110.00", "Water Bottle"));
 
-        for (Bike bike : bikeList) {
+
+        for (String[] bike : sb) {
             Random ran = new Random();
-            JLabel bikeLabel = new JLabel(new ImageIcon(getClass().getResource(imgList[ran.nextInt(5)])));
-            bikeLabel.setText("<html>Price: " + bike.price + "<br>Accessories: " + bike.accessories + "</html>");
+            String ranImg = imgList[ran.nextInt(5)];
+            JLabel bikeLabel = new JLabel(new ImageIcon(getClass().getResource(ranImg)));
+            bikeLabel.setText("<html>Price: " + bike[4]);
             bikeLabel.setForeground(Color.WHITE);
             bikeLabel.setHorizontalTextPosition(SwingConstants.CENTER);
             bikeLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -133,7 +123,7 @@ public class Customer extends JFrame {
 
             bikeLabel.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    openRentingPage(bike.imagePath, bike.price, bike.accessories);
+                    openRentingPage(ranImg, bike[4]);
                 }
             });
 
@@ -141,7 +131,7 @@ public class Customer extends JFrame {
         }
     }
 
-    private void openRentingPage(String resourcePath, String price, String accessories) {
+    private void openRentingPage(String resourcePath, String price) {
         JFrame rentingFrame = new JFrame("Rent Bike");
         rentingFrame.setSize(400, 500);
         rentingFrame.setLocationRelativeTo(null);
@@ -168,9 +158,6 @@ public class Customer extends JFrame {
         priceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         rentingPanel.add(priceLabel);
 
-        JLabel accessoriesLabel = new JLabel("Accessories: " + accessories);
-        accessoriesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        rentingPanel.add(accessoriesLabel);
 
         JPanel durationPanel = new JPanel(new FlowLayout());
         durationPanel.add(new JLabel("Start Date:"));
@@ -246,7 +233,7 @@ public class Customer extends JFrame {
     
     private void fetchBikes() {
         
-        String sql = "SELECT * FROM bicycles";
+        String sql = "SELECT * FROM bicycle";
         try (
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql)) {
@@ -266,43 +253,7 @@ public class Customer extends JFrame {
         }
     
     }
-/*  private void showStaffView() {
-        staffPanel.removeAll();
-        try {
-            String sqlBikes = "SELECT * FROM Bicycle";
-            Statement stmtBikes = conn.createStatement();
-            ResultSet rsBikes = stmtBikes.executeQuery(sqlBikes);
-            JTextArea bikesArea = new JTextArea("Bikes:\n");
-            while (rsBikes.next()) {
-                bikesArea.append("ID: " + rsBikes.getInt("bicycle_id") + ", Model: " + rsBikes.getString("model") + ", Type: " + rsBikes.getString("type") + ", Price/Hour: " + rsBikes.getDouble("price_per_hour") + "\n");
-            }
-            staffPanel.add(new JScrollPane(bikesArea));
 
-            String sqlAccessories = "SELECT * FROM Accessory";
-            Statement stmtAccessories = conn.createStatement();
-            ResultSet rsAccessories = stmtAccessories.executeQuery(sqlAccessories);
-            JTextArea accessoriesArea = new JTextArea("Accessories:\n");
-            while (rsAccessories.next()) {
-                accessoriesArea.append("ID: " + rsAccessories.getInt("accessory_id") + ", Type: " + rsAccessories.getString("type") + ", Price: " + rsAccessories.getDouble("price") + "\n");
-            }
-            staffPanel.add(new JScrollPane(accessoriesArea));
-
-            String sqlCustomers = "SELECT * FROM Renter";
-            Statement stmtCustomers = conn.createStatement();
-            ResultSet rsCustomers = stmtCustomers.executeQuery(sqlCustomers);
-            JTextArea customersArea = new JTextArea("Customers:\n");
-            while (rsCustomers.next()) {
-                customersArea.append("ID: " + rsCustomers.getInt("renter_id") + ", Name: " + rsCustomers.getString("full_name") + ", Email: " + rsCustomers.getString("email") + "\n");
-            }
-            staffPanel.add(new JScrollPane(customersArea));
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error fetching staff data: " + e.getMessage());
-        }
-        mainPanel.revalidate();
-        mainPanel.repaint();
-    }
-*/
     class Bike {
         String imagePath;
         String price;
