@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class StaffWindow extends JFrame implements ActionListener {
+public class Staff extends JFrame implements ActionListener {
 
     String[] cblist = {"Bikes", "Accessories", "Customer"};
     private ArrayList<Bike> allBikes = new ArrayList<>();
@@ -13,7 +13,7 @@ public class StaffWindow extends JFrame implements ActionListener {
     private ArrayList<Customer> allCustomers = new ArrayList<>();
     private JTextArea displayArea;
 
-    public StaffWindow() {
+    public Staff() {
         setTitle("Staff Window");
 
         JPanel mp = new JPanel();

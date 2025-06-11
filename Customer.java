@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.sql.*;
 
-public class Final_Project extends JFrame {
+public class Customer extends JFrame {
 
     private GridBagConstraints gdc = new GridBagConstraints();
     private JButton bikesOffered, bikesRented, payment, staffView;
@@ -17,7 +17,7 @@ public class Final_Project extends JFrame {
     private ArrayList<Bike> bikeList = new ArrayList<>();
     private Connection conn;
 
-    public Final_Project() {
+    public Customer() {
         // try {
         //     conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bikerental?useSSL=false", "root", "your_password");
         // } catch (SQLException e) {

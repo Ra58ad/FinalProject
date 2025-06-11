@@ -4,6 +4,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
 import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import javax.imageio.*;
 import javax.swing.*;
 import java.util.*;
@@ -126,9 +131,44 @@ public class Login extends JFrame {
         b1 = new JButton("OK");
         b1.addActionListener(e -> {
         
-                new Final_Project();
+            String email = t1.getText();
+            String password = new String(pa.getPassword());
+
+            String[] roles = {"Customer (Renter)", "Staff", "Manager"};
+            String selectedRole = (String) JOptionPane.showInputDialog(
+                    this,
+                    "Select your role:",
+                    "Role Selection",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    roles,
+                    roles[0]
+            );
+
+            if (selectedRole == null) return;
+
+            boolean authenticated = false;
+            String table = "";
+            switch (selectedRole) {
+                case "Customer (Renter)":
+                    table = "renter"; break;
+                case "Staff":
+                    table = "staff"; break;
+                case "Manager":
+                    table = "manager"; break;
+            }
+
+            authenticated = authenticate(table, email, password);
+            if (authenticated) {
+                JOptionPane.showMessageDialog(this, selectedRole + " login successful!");
+                dispose();
+                
+            } else {
+                JOptionPane.showMessageDialog(this, "Invalid email or password for selected role.");
+            }
             
         });
+
         b1.setSize(60, 30);
         p2.add(b1);
 
@@ -158,11 +198,33 @@ public class Login extends JFrame {
         
     }
 
+    private boolean authenticate(String table, String email, String password) {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/bicycle_rental_system", "root", "RamoRam"
+            );
+            String sql = "SELECT * FROM " + table + " WHERE email=? AND password=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, email);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+            boolean found = rs.next();
+            rs.close();
+            ps.close();
+            conn.close();
+            return found;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
 
 }
 
 class Main {
         public static void main(String[] args) throws IOException {
-        new Manager();
+        new Login();
     }
 }
