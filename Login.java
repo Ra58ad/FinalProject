@@ -7,7 +7,7 @@ import java.io.*;
 import javax.imageio.*;
 import javax.swing.*;
 import java.util.*;
-import FinalProject.StaffWindow;
+
 
 public class Login extends JFrame {
     JLabel l1;
@@ -104,19 +104,21 @@ public class Login extends JFrame {
         p1.add(pa,gb);
 
         regb = new JButton("Register");
-        regb.setBackground(this.getBackground());
-        regb.setForeground(Color.decode("#A85307"));
+        regb.setBackground(Color.decode("#010D1A"));
+        regb.setForeground(Color.CYAN);
         regb.setFont(fo);
-        gb.gridx = 1;
+        regb.setBorder(BorderFactory.createEmptyBorder());
+        gb.gridx = 0;
         gb.gridy = 6;
         gb.gridheight = 1;
         gb.gridwidth = 2;
-        gb.ipday = 0;
-        gb.ipdax = 100;
+        gb.ipady = 0;
+        gb.ipadx = 100;
         gb.weightx = 0.1;
         gb.weighty = 0;
         in.set(10,0,10,0);
         gb.insets = in;
+        p1.add(regb, gb);
 
         //forb = new JButton("Forgot password");
 
@@ -134,7 +136,7 @@ public class Login extends JFrame {
         b2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(e.getSource() == b2){
-                    new Welcome();
+                    //new Welcome();
                 }
             }
         });
@@ -148,17 +150,19 @@ public class Login extends JFrame {
         setResizable(false);
         getContentPane().setBackground(Color.decode("#010D1A"));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(300, 300);
+        setSize(500, 500);
+        pack();
+        setLocationRelativeTo(null);
         //setExtendedState(MAXIMIZED_BOTH);
         setVisible(true);
         
     }
 
-        public static void main(String[] args) throws IOException {
-        new Login();
-    }
+
 }
 
 class Main {
-
+        public static void main(String[] args) throws IOException {
+        new Manager();
+    }
 }

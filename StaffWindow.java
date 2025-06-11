@@ -37,6 +37,8 @@ public class StaffWindow extends JFrame implements ActionListener {
 
         setResizable(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        pack();
+        setLocationRelativeTo(null);
         setSize(600, 600);
         setVisible(true);
 

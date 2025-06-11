@@ -26,9 +26,7 @@ public class Final_Project extends JFrame {
         // }
 
         setTitle("Bicycle Rental System");
-        setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+
 
         mainPanel = new JPanel(new CardLayout());
         bikesOfferedPanel = new JPanel(new GridLayout(0, 2, 10, 10));
@@ -105,6 +103,10 @@ public class Final_Project extends JFrame {
         payment.addActionListener(listener);
         staffView.addActionListener(listener);
 
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pack();
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 

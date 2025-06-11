@@ -11,7 +11,32 @@ public class Manager extends JFrame implements ActionListener {
 
 
     public Manager() {
+        
         setTitle("Manager");
+
+        JPanel signPanel = new JPanel();
+        signPanel.setBackground(Color.GRAY);
+        signPanel.setBorder(BorderFactory.createEmptyBorder());
+        signPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gb = new GridBagConstraints();
+        JButton signButton = new JButton("Sign Out");
+        signButton.addActionListener(e->{
+            
+            new Welcome();
+            dispose();
+        });
+
+        
+        
+        gb.anchor = GridBagConstraints.LINE_END;
+        gb.gridx = 1;
+        gb.gridy = 1;
+        gb.gridheight = 1;
+        gb.gridwidth = 1;
+        gb.weightx=0.2;
+        gb.ipadx = 20;
+        signPanel.add(signButton, gb);
+        add(signPanel, BorderLayout.NORTH);        
         
         JPanel mp = new JPanel();
         mp.setLayout(new BoxLayout(mp, BoxLayout.PAGE_AXIS));
@@ -43,12 +68,14 @@ public class Manager extends JFrame implements ActionListener {
 
         setResizable(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(600, 600);
+        pack();
+        setLocationRelativeTo(null);
+        setSize(550, 300);
         setVisible(true);
     }
         @Override
         public void actionPerformed(ActionEvent e){
-        
+
         JComboBox com = (JComboBox) e.getSource();
         String sel = (String) com.getSelectedItem();
         if (sel == "Bikes"){}
@@ -56,5 +83,6 @@ public class Manager extends JFrame implements ActionListener {
         if (sel == "Customer"){}
         if (sel == "Staff"){}
         if (sel == "Payments"){}
+        
     }
 }

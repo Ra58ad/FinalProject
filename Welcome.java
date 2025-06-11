@@ -67,6 +67,8 @@ public class Welcome extends JFrame{
             //getContentPane().setBackground(Color.decode("#010D1A"));
             setDefaultCloseOperation(EXIT_ON_CLOSE);
             setSize(1000, 1000);
+            pack();
+            setLocationRelativeTo(null);
             //setExtendedState(MAXIMIZED_BOTH);
             setVisible(true);
         }
