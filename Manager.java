@@ -277,7 +277,7 @@ public class Manager extends JFrame implements ActionListener {
 
 
     private void insertCustomer(String name, String email, String phone, String password, java.sql.Date regisDate){
-        String sql = "INSERT INTO staff (full_name, email, phone, password, registered_at) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO renter (full_name, email, phone, password, registered_at) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, name);

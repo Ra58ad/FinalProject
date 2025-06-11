@@ -19,7 +19,7 @@ public class Customer extends JFrame {
 
     public Customer() {
         setTitle("Bicycle Rental System");
-        
+
         try {
             conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bicycle_rental_system", "root", "RamoRam");
         } catch (SQLException e) {
@@ -315,8 +315,8 @@ public class Customer extends JFrame {
     }
 }
 
-class Main {
-        public static void main(String[] args) {
-        new Customer();
-    }
-}
+// class Main {
+//         public static void main(String[] args) {
+//         new Customer();
+//     }
+// }

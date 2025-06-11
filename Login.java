@@ -31,7 +31,7 @@ public class Login extends JFrame {
 
     public Login()  {
 
-        setTitle("Bicycle Rental");
+        setTitle("Bicycle Rental Login");
         Insets in = new Insets(0,0,0,0);
 
         p1 = new JPanel();
@@ -55,7 +55,7 @@ public class Login extends JFrame {
 
         Font fo = new Font("Times New Roman", Font.PLAIN, 20);
 
-        l1 = new JLabel("Username: ");
+        l1 = new JLabel("Email: ");
         l1.setFont(fo);
         l1.setForeground(Color.decode("#A85307"));
         gb.gridx = 0;
