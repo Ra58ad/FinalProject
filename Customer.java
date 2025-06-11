@@ -49,7 +49,6 @@ public class Customer extends JFrame {
         bikesOffered.setBackground(Color.DARK_GRAY);
         bikesRented.setBackground(Color.DARK_GRAY);
         payment.setBackground(Color.DARK_GRAY);
-        staffView.setBackground(Color.DARK_GRAY);
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(bikesOffered);
@@ -96,7 +95,6 @@ public class Customer extends JFrame {
         bikesOffered.addActionListener(listener);
         bikesRented.addActionListener(listener);
         payment.addActionListener(listener);
-        staffView.addActionListener(listener);
 
         setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -123,7 +121,9 @@ public class Customer extends JFrame {
 
             bikeLabel.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    
                     openRentingPage(ranImg, bike[4]);
+
                 }
             });
 
@@ -204,6 +204,8 @@ public class Customer extends JFrame {
         });
 
         rentingFrame.add(rentingPanel);
+        
+
         rentingFrame.setVisible(true);
     }
 
@@ -291,8 +293,3 @@ public class Customer extends JFrame {
     }
 }
 
-class Main {
-        public static void main(String[] args) {
-        new Customer();
-    }
-}

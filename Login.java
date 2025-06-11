@@ -15,6 +15,7 @@ import java.util.*;
 
 
 public class Login extends JFrame {
+    public boolean flag = false;
     JLabel l1;
     JLabel l2;
     JLabel l3;
@@ -162,6 +163,7 @@ public class Login extends JFrame {
             if (authenticated) {
                 JOptionPane.showMessageDialog(this, selectedRole + " login successful!");
                 dispose();
+                flag = true;
                 switch(table){
                     case "renter":
                         new Customer(); break;

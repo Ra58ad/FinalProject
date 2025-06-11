@@ -4,11 +4,27 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
 import java.io.*;
+import java.sql.*;
+
 import javax.imageio.*;
 import javax.swing.*;
+
+import FinalProject.Customer.PaymentRecord;
+import FinalProject.Customer.RentedBike;
+
 import java.util.*;
 
 public class Welcome extends JFrame{
+
+        private GridBagConstraints gdc = new GridBagConstraints();
+        private JButton bikesOffered, bikesRented, payment, staffView;
+        private JPanel mainPanel, bikesOfferedPanel, bikesRentedPanel, paymentPanel, staffPanel;
+        private ArrayList<RentedBike> rentedBikes = new ArrayList<>();
+        private ArrayList<PaymentRecord> paymentRecords = new ArrayList<>();
+        ArrayList <String[]> sb = new ArrayList<>();
+        private Connection conn;
+        String[] imgList = {"img_1.png", "img_2.png", "img_3.png", "img_4.png", "img_5.png"};
+
         public Welcome() {
             
             JPanel menuPanel = new JPanel();
@@ -19,6 +35,7 @@ public class Welcome extends JFrame{
             JMenuBar mb = new JMenuBar();
 
             JMenu bikeMenu = new JMenu("Bikes");
+
             JMenu contactMenu = new JMenu("Contact");
             JMenuItem ad = new JMenuItem("Address");
             JMenuItem form = new JMenuItem("Contact form");
@@ -39,9 +56,9 @@ public class Welcome extends JFrame{
             menuPanel.add(mb, gb);
             add(menuPanel, BorderLayout.NORTH);
 
-            JPanel mainPanel = new JPanel();
-            mainPanel.setBackground(Color.CYAN);
-            mainPanel.setLayout(new GridBagLayout());
+            JPanel mainPanel1 = new JPanel();
+            mainPanel1.setBackground(Color.CYAN);
+            mainPanel1.setLayout(new GridBagLayout());
 
             
 
@@ -55,23 +72,135 @@ public class Welcome extends JFrame{
 
             add(leftPanel, BorderLayout.WEST);
 
-            JScrollPane scPanel = new JScrollPane(mainPanel);
+            JScrollPane scPanel = new JScrollPane(mainPanel1);
             add(scPanel);
 
+                
+
+    
 
 
-
-
-
-            setResizable(true);
-            //getContentPane().setBackground(Color.decode("#010D1A"));
-            setDefaultCloseOperation(EXIT_ON_CLOSE);
-            setSize(1000, 1000);
-            pack();
-            setLocationRelativeTo(null);
-            //setExtendedState(MAXIMIZED_BOTH);
-            setVisible(true);
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bicycle_rental_system", "root", "RamoRam");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Database connection failed: " + e.getMessage());
+            System.exit(1);
         }
+        fetchBikes();
+
+
+
+        mainPanel = new JPanel(new CardLayout());
+        bikesOfferedPanel = new JPanel(new GridLayout(0, 2, 10, 10));
+        bikesOfferedPanel.setBackground(Color.BLACK);
+        bikesRentedPanel = new JPanel();
+        bikesRentedPanel.setBackground(Color.BLACK);
+        paymentPanel = new JPanel();
+        paymentPanel.setBackground(Color.BLACK);
+
+
+        bikesOffered = new JButton("Bikes Offered");
+        bikesRented = new JButton("Bikes Rented");
+        payment = new JButton("Payment");
+
+        bikesOffered.setBackground(Color.DARK_GRAY);
+        bikesRented.setBackground(Color.DARK_GRAY);
+        payment.setBackground(Color.DARK_GRAY);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(bikesOffered);
+        buttonPanel.add(bikesRented);
+        buttonPanel.add(payment);
+
+        addSampleBikes();
+
+        mainPanel.add(bikesOfferedPanel, "BikesOffered");
+        mainPanel.add(bikesRentedPanel, "BikesRented");
+        mainPanel.add(paymentPanel, "Payment");
+
+
+        add(buttonPanel, BorderLayout.NORTH);
+        add(mainPanel, BorderLayout.CENTER);
+
+        ActionListener listener = new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout) mainPanel.getLayout();
+                if (e.getSource() == bikesOffered) {
+                    bikesOffered.setBackground(Color.BLUE);
+                    bikesRented.setBackground(Color.DARK_GRAY);
+                    payment.setBackground(Color.DARK_GRAY);
+                    staffView.setBackground(Color.DARK_GRAY);
+                    cl.show(mainPanel, "BikesOffered");
+            }
+        }
+        };
+        bikesOffered.addActionListener(listener);
+        bikesRented.addActionListener(listener);
+        payment.addActionListener(listener);
+    
+
+        setSize(600, 600);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+
+
+    private void addSampleBikes() {
+
+
+        for (String[] bike : sb) {
+            Random ran = new Random();
+            String ranImg = imgList[ran.nextInt(5)];
+            JLabel bikeLabel = new JLabel(new ImageIcon(getClass().getResource(ranImg)));
+            bikeLabel.setText("<html>Price: " + bike[4]);
+            bikeLabel.setForeground(Color.WHITE);
+            bikeLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+            bikeLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
+            bikeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            bikeLabel.setVerticalAlignment(SwingConstants.CENTER);
+
+            bikeLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    setVisible(false);
+                    new Login();
+                    
+                }
+            });
+
+            bikesOfferedPanel.add(bikeLabel);
+        }
+    }
+
+
+
+
+private void fetchBikes() {
+        
+        String sql = "SELECT * FROM bicycle";
+        try (
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                
+                String ID = rs.getString("bicycle_id");
+                String model = rs.getString("model");
+                String type = rs.getString("type");
+                String status = rs.getString("status");
+                String price = rs.getString("price_per_hour");
+                String[] temp = {ID, model, type, status, price};
+                sb.add(temp);
+            }
+        }
+        catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Fetch failed: " + ex.getMessage());
+        }
+    
+    }
 }
 
 
