@@ -1,10 +1,16 @@
 package FinalProject;
 
 import javax.swing.*;
+
+import FinalProject.Customer.Bike;
+import FinalProject.Customer.PaymentRecord;
+import FinalProject.Customer.RentedBike;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Random;
 import java.sql.*;
 
 public class Customer extends JFrame {
@@ -15,6 +21,7 @@ public class Customer extends JFrame {
     private ArrayList<RentedBike> rentedBikes = new ArrayList<>();
     private ArrayList<PaymentRecord> paymentRecords = new ArrayList<>();
     private ArrayList<Bike> bikeList = new ArrayList<>();
+    ArrayList <String[]> sb = new ArrayList<>();
     private Connection conn;
 
     public Customer() {
@@ -90,13 +97,6 @@ public class Customer extends JFrame {
                     staffView.setBackground(Color.DARK_GRAY);
                     showPaymentRecords();
                     cl.show(mainPanel, "Payment");
-                } else if (e.getSource() == staffView) {
-                    staffView.setBackground(Color.BLUE);
-                    bikesOffered.setBackground(Color.DARK_GRAY);
-                    bikesRented.setBackground(Color.DARK_GRAY);
-                    payment.setBackground(Color.DARK_GRAY);
-                    showStaffView();
-                    cl.show(mainPanel, "Staff");
                 }
             }
         };
@@ -106,11 +106,13 @@ public class Customer extends JFrame {
         staffView.addActionListener(listener);
 
         setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
     }
+
+    String[] imgList = {"/img_1.png", "/img_2.png", "/img_3.png", "/img_4.png", "/img_5.png"};
 
     private void addSampleBikes() {
         bikeList.add(new Bike("/img_1.png", "120.00", "Helmet"));
@@ -120,7 +122,8 @@ public class Customer extends JFrame {
         bikeList.add(new Bike("/img_5.png", "110.00", "Water Bottle"));
 
         for (Bike bike : bikeList) {
-            JLabel bikeLabel = new JLabel(new ImageIcon(getClass().getResource(bike.imagePath)));
+            Random ran = new Random();
+            JLabel bikeLabel = new JLabel(new ImageIcon(getClass().getResource(imgList[ran.nextInt(5)])));
             bikeLabel.setText("<html>Price: " + bike.price + "<br>Accessories: " + bike.accessories + "</html>");
             bikeLabel.setForeground(Color.WHITE);
             bikeLabel.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -240,8 +243,30 @@ public class Customer extends JFrame {
         mainPanel.revalidate();
         mainPanel.repaint();
     }
-
-    private void showStaffView() {
+    
+    private void fetchBikes() {
+        
+        String sql = "SELECT * FROM bicycles";
+        try (
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                
+                String ID = rs.getString("bicycle_id");
+                String model = rs.getString("model");
+                String type = rs.getString("type");
+                String status = rs.getString("status");
+                String price = rs.getString("price_per_hour");
+                String[] temp = {ID, model, type, status, price};
+                sb.add(temp);
+            }
+        }
+        catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Fetch failed: " + ex.getMessage());
+        }
+    
+    }
+/*  private void showStaffView() {
         staffPanel.removeAll();
         try {
             String sqlBikes = "SELECT * FROM Bicycle";
@@ -277,7 +302,7 @@ public class Customer extends JFrame {
         mainPanel.revalidate();
         mainPanel.repaint();
     }
-
+*/
     class Bike {
         String imagePath;
         String price;
@@ -315,8 +340,8 @@ public class Customer extends JFrame {
     }
 }
 
-// class Main {
-//         public static void main(String[] args) {
-//         new Customer();
-//     }
-// }
+class Main {
+        public static void main(String[] args) {
+        new Customer();
+    }
+}
