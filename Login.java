@@ -123,7 +123,7 @@ public class Login extends JFrame {
         gb.weighty = 0;
         in.set(10,0,10,0);
         gb.insets = in;
-        p1.add(regb, gb);
+        
 
         //forb = new JButton("Forgot password");
 
@@ -162,7 +162,14 @@ public class Login extends JFrame {
             if (authenticated) {
                 JOptionPane.showMessageDialog(this, selectedRole + " login successful!");
                 dispose();
-                
+                switch(table){
+                    case "renter":
+                        new Customer(); break;
+                    case "staff":
+                        new Staff(); break;
+                    case "manager":
+                        new Manager(); break;
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid email or password for selected role.");
             }
@@ -173,15 +180,18 @@ public class Login extends JFrame {
         p2.add(b1);
 
         b2 = new JButton("Cancel");
-        b2.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(e.getSource() == b2){
-                    //new Welcome();
-                }
-            }
+        b2.addActionListener(e -> {
+            dispose();
+            new Welcome();
         });
         b2.setSize(60, 30);
         p2.add(b2);
+
+        regb.addActionListener(e -> {
+            dispose();
+            new Register();
+        });
+        p1.add(regb, gb);
 
         p1.setOpaque(false);
         p2.setOpaque(false);
@@ -223,8 +233,4 @@ public class Login extends JFrame {
 
 }
 
-class Main {
-        public static void main(String[] args) throws IOException {
-        new Login();
-    }
-}
+

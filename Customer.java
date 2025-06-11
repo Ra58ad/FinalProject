@@ -18,14 +18,16 @@ public class Customer extends JFrame {
     private Connection conn;
 
     public Customer() {
-        // try {
-        //     conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bikerental?useSSL=false", "root", "your_password");
-        // } catch (SQLException e) {
-        //     JOptionPane.showMessageDialog(this, "Database connection failed: " + e.getMessage());
-        //     System.exit(1);
-        // }
-
         setTitle("Bicycle Rental System");
+        
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bicycle_rental_system", "root", "RamoRam");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Database connection failed: " + e.getMessage());
+            System.exit(1);
+        }
+
+
 
 
         mainPanel = new JPanel(new CardLayout());
@@ -111,11 +113,11 @@ public class Customer extends JFrame {
     }
 
     private void addSampleBikes() {
-        bikeList.add(new Bike("/images/bike1.jpg", "120.00", "Helmet"));
-        bikeList.add(new Bike("/images/bike2.jpg", "100.00", "Bike Lock"));
-        bikeList.add(new Bike("/images/bike3.jpg", "130.00", "Water Bottle"));
-        bikeList.add(new Bike("/images/bike4.jpg", "150.00", "Helmet, Bike Lock"));
-        bikeList.add(new Bike("/images/bike5.jpg", "110.00", "Water Bottle"));
+        bikeList.add(new Bike("/img_1.png", "120.00", "Helmet"));
+        bikeList.add(new Bike("/img_2.png", "100.00", "Bike Lock"));
+        bikeList.add(new Bike("/img_3.png", "130.00", "Water Bottle"));
+        bikeList.add(new Bike("/img_4.png", "150.00", "Helmet, Bike Lock"));
+        bikeList.add(new Bike("/img_5.png", "110.00", "Water Bottle"));
 
         for (Bike bike : bikeList) {
             JLabel bikeLabel = new JLabel(new ImageIcon(getClass().getResource(bike.imagePath)));
@@ -310,5 +312,11 @@ public class Customer extends JFrame {
             this.amount = amount;
             this.isPaid = isPaid;
         }
+    }
+}
+
+class Main {
+        public static void main(String[] args) {
+        new Customer();
     }
 }
