@@ -1,4 +1,5 @@
 package FinalProject;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
@@ -6,6 +7,7 @@ import java.io.*;
 import javax.imageio.*;
 import javax.swing.*;
 import java.util.*;
+import FinalProject.StaffWindow;
 
 public class Login extends JFrame {
     JLabel l1;
@@ -17,6 +19,8 @@ public class Login extends JFrame {
     JPasswordField pa;
     JButton b1;
     JButton b2;
+    JButton regb;
+    JButton forb;
     JPanel p1;
     JPanel p2;
 
@@ -82,6 +86,7 @@ public class Login extends JFrame {
         //gb.gridheight = 1;
         gb.gridwidth = 1;
         in.set(0,0,0,0);
+        gb.insets = in;
         gb.weighty = 0.1;
         gb.ipadx = 0;
         //gb.weightx = 0.5;
@@ -98,6 +103,22 @@ public class Login extends JFrame {
         //gb.weighty = 0.1;
         p1.add(pa,gb);
 
+        regb = new JButton("Register");
+        regb.setBackground(this.getBackground());
+        regb.setForeground(Color.decode("#A85307"));
+        regb.setFont(fo);
+        gb.gridx = 1;
+        gb.gridy = 6;
+        gb.gridheight = 1;
+        gb.gridwidth = 2;
+        gb.ipday = 0;
+        gb.ipdax = 100;
+        gb.weightx = 0.1;
+        gb.weighty = 0;
+        in.set(10,0,10,0);
+        gb.insets = in;
+
+        //forb = new JButton("Forgot password");
 
         p2 = new JPanel();
         b1 = new JButton("OK");
@@ -132,10 +153,12 @@ public class Login extends JFrame {
         setVisible(true);
         
     }
+
+        public static void main(String[] args) throws IOException {
+        new Login();
+    }
 }
 
 class Main {
-    public static void main(String[] args) throws IOException {
-        new Manager();
-    }
+
 }
