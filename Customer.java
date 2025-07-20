@@ -12,6 +12,10 @@ import java.sql.*;
 
 public class Customer extends JFrame {
 
+    static String DB = "jdbc:mysql://localhost:3306/bicycle_rental_system";
+    static String User = "root";
+    static String Pass = "RamoRam";
+    
     private GridBagConstraints gdc = new GridBagConstraints();
     private JButton bikesOffered, bikesRented, payment, staffView;
     private JPanel mainPanel, bikesOfferedPanel, bikesRentedPanel, paymentPanel, staffPanel;
@@ -22,9 +26,10 @@ public class Customer extends JFrame {
 
     public Customer() {
         setTitle("Bicycle Rental System");
+        
 
         try {
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bicycle_rental_system", "root", "RamoRam");
+            conn = DriverManager.getConnection(DB, User, Pass);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Database connection failed: " + e.getMessage());
             System.exit(1);

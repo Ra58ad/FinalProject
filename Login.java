@@ -30,6 +30,10 @@ public class Login extends JFrame {
     JPanel p1;
     JPanel p2;
 
+    static String DB = "jdbc:mysql://localhost:3306/bicycle_rental_system";
+    static String User = "root";
+    static String Password = "RamoRam";
+
     public Login()  {
 
         setTitle("Bicycle Rental Login");
@@ -214,7 +218,7 @@ public class Login extends JFrame {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/bicycle_rental_system", "root", "RamoRam"
+                    DB, User, Password
             );
             String sql = "SELECT * FROM " + table + " WHERE email=? AND password=?";
             PreparedStatement ps = conn.prepareStatement(sql);

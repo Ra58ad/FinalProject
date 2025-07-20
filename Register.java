@@ -34,6 +34,10 @@ public class Register extends JFrame {
     JPanel p1;
     JPanel p2;
 
+    static String DB = "jdbc:mysql://localhost:3306/bicycle_rental_system";
+    static String User = "root";
+    static String Password = "RamoRam";
+    
     public Register()  {
 
         setTitle("Bicycle Rental Register");
@@ -239,7 +243,7 @@ public class Register extends JFrame {
 
     private void register(String name, String email, String phone, String password){
         String sql = "INSERT INTO renter (full_name, email, phone, password, registered_at) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bicycle_rental_system", "root", "RamoRam");
+        try (Connection conn = DriverManager.getConnection(DB, User, Password);
             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, name);
             stmt.setString(2, email);

@@ -25,6 +25,10 @@ public class Welcome extends JFrame{
         private Connection conn;
         String[] imgList = {"img_1.png", "img_2.png", "img_3.png", "img_4.png", "img_5.png"};
 
+        static String DB = "jdbc:mysql://localhost:3306/bicycle_rental_system";
+        static String User = "root";
+        static String Password = "RamoRam";
+
         public Welcome() {
             
             JPanel menuPanel = new JPanel();
@@ -81,7 +85,7 @@ public class Welcome extends JFrame{
 
 
         try {
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bicycle_rental_system", "root", "RamoRam");
+            conn = DriverManager.getConnection(DB, User, Password);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Database connection failed: " + e.getMessage());
             System.exit(1);
